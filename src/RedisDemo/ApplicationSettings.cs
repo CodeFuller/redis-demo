@@ -2,6 +2,6 @@
 {
 	internal class ApplicationSettings
 	{
-		public string DatabasePath { get; set; }
+		public string MultiplexerConfiguration { get; set; }
 	}
 }

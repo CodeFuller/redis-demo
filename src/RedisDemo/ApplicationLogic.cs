@@ -39,8 +39,8 @@ namespace RedisDemo
 
 		private async Task RunInternal()
 		{
-			logger.LogInformation("Connecting to Redis ...");
-			using var redis = await ConnectionMultiplexer.ConnectAsync("localhost");
+			logger.LogInformation("Connecting to Redis at {MultiplexerConfiguration} ...", settings.MultiplexerConfiguration);
+			using var redis = await ConnectionMultiplexer.ConnectAsync(settings.MultiplexerConfiguration);
 			logger.LogInformation("Connected successfully");
 
 			var database = redis.GetDatabase();

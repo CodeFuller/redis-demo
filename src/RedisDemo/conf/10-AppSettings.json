@@ -1,4 +1,6 @@
 ﻿{
+	"multiplexerConfiguration": "localhost",
+
 	"logging": {
 		"defaultLogLevel": "Information",
 		"targets": [
