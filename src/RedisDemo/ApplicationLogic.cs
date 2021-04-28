@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CodeFuller.Library.Bootstrap;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 
 namespace RedisDemo
 {
@@ -19,25 +20,40 @@ namespace RedisDemo
 			this.settings = options?.Value ?? throw new ArgumentNullException(nameof(options));
 		}
 
-		public Task<int> Run(string[] args, CancellationToken cancellationToken)
+		public async Task<int> Run(string[] args, CancellationToken cancellationToken)
 		{
 			try
 			{
-				RunInternal();
+				await RunInternal();
 
-				return Task.FromResult(0);
+				return 0;
 			}
 #pragma warning disable CA1031 // Do not catch general exception types
 			catch (Exception e)
 #pragma warning restore CA1031 // Do not catch general exception types
 			{
 				logger.LogCritical(e, "Application has failed");
-				return Task.FromResult(e.HResult);
+				return e.HResult;
 			}
 		}
 
-		private static void RunInternal()
+		private async Task RunInternal()
 		{
+			logger.LogInformation("Connecting to Redis ...");
+			using var redis = await ConnectionMultiplexer.ConnectAsync("localhost");
+			logger.LogInformation("Connected successfully");
+
+			var database = redis.GetDatabase();
+
+			const string stringKey = "TestStringKey";
+
+			var value = await database.StringGetAsync(stringKey);
+			logger.LogInformation("String value before set: {StringValue}", value);
+
+			await database.StringSetAsync(stringKey, "Some Value");
+
+			value = await database.StringGetAsync(stringKey);
+			logger.LogInformation("String value after set: {StringValue}", value);
 		}
 	}
 }
