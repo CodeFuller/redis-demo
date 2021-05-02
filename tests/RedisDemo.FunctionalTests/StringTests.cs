@@ -17,7 +17,7 @@ namespace RedisDemo.FunctionalTests
 
 			// Act
 
-			var value = await database.StringGetAsync("RedisDemo.FunctionalTests.StringTests.Missing Key");
+			var value = await database.StringGetAsync("redis.demo:functional.tests:string.tests:missing.key");
 
 			// Assert
 
@@ -31,12 +31,12 @@ namespace RedisDemo.FunctionalTests
 
 			var database = Redis.GetDatabase();
 
-			var wasSet = await database.StringSetAsync("RedisDemo.FunctionalTests.StringTests.Existing Key", "Some Value");
+			var wasSet = await database.StringSetAsync("redis.demo:functional.tests:string.tests:existing.key", "Some Value");
 			Assert.IsTrue(wasSet);
 
 			// Act
 
-			string value = await database.StringGetAsync("RedisDemo.FunctionalTests.StringTests.Existing Key");
+			string value = await database.StringGetAsync("redis.demo:functional.tests:string.tests:existing.key");
 
 			// Assert
 

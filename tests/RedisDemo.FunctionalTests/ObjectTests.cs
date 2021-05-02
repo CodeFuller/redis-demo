@@ -32,7 +32,7 @@ namespace RedisDemo.FunctionalTests
 
 			var redisConfiguration = new RedisConfiguration
 			{
-				KeyPrefix = "RedisDemo.FunctionalTests",
+				KeyPrefix = "redis.demo:functional.tests:",
 				Hosts = new[]
 				{
 					new RedisHost { Host = "localhost", Port = 6379 },
@@ -57,10 +57,10 @@ namespace RedisDemo.FunctionalTests
 
 			// Act
 
-			var wasSet = await cacheClient.Db0.AddAsync("Some Object", originalObject);
+			var wasSet = await cacheClient.Db0.AddAsync("object.tests:some.object", originalObject);
 			Assert.IsTrue(wasSet);
 
-			var objectFromCache = await cacheClient.Db0.GetAsync<SomeObject>("Some Object");
+			var objectFromCache = await cacheClient.Db0.GetAsync<SomeObject>("object.tests:some.object");
 
 			// Assert
 

@@ -45,7 +45,7 @@ namespace RedisDemo
 
 			var database = redis.GetDatabase();
 
-			const string stringKey = "TestStringKey";
+			const string stringKey = "redis.demo:test.string.key";
 
 			var value = await database.StringGetAsync(stringKey);
 			logger.LogInformation("String value before set: {StringValue}", value);
