@@ -5,6 +5,8 @@ using static RedisDemo.FunctionalTests.RedisConnection;
 
 namespace RedisDemo.FunctionalTests
 {
+	// These tests use low-level StackExchange.Redis library.
+	// https://stackexchange.github.io/StackExchange.Redis/
 	[TestClass]
 	public class StringTests
 	{

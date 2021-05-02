@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StackExchange.Redis.Extensions.Core.Abstractions;
@@ -8,6 +9,8 @@ using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace RedisDemo.FunctionalTests
 {
+	// These tests use high-level StackExchange.Redis.Extensions library.
+	// https://imperugo.gitbook.io/stackexchange-redis-extensions/
 	[TestClass]
 	public class ObjectTests
 	{
@@ -30,17 +33,8 @@ namespace RedisDemo.FunctionalTests
 		{
 			// Arrange
 
-			var redisConfiguration = new RedisConfiguration
-			{
-				KeyPrefix = "redis.demo:functional.tests:",
-				Hosts = new[]
-				{
-					new RedisHost { Host = "localhost", Port = 6379 },
-				},
-			};
-
 			var services = new ServiceCollection();
-			services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+			AddRedis(services);
 
 			await using var serviceProvider = services.BuildServiceProvider();
 			var cacheClient = serviceProvider.GetRequiredService<IRedisCacheClient>();
@@ -66,6 +60,18 @@ namespace RedisDemo.FunctionalTests
 
 			objectFromCache.Should().NotBeSameAs(originalObject);
 			objectFromCache.Should().BeEquivalentTo(originalObject);
+		}
+
+		private static void AddRedis(IServiceCollection services)
+		{
+			var configuration = new ConfigurationBuilder()
+				.AddJsonFile("appsettings.json")
+				.Build();
+
+			var redisConfiguration = configuration.GetSection("redis").Get<RedisConfiguration>();
+
+			services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfiguration);
+			services.AddSingleton(redisConfiguration);
 		}
 	}
 }
