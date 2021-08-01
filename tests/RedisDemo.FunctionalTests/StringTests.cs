@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static RedisDemo.FunctionalTests.RedisConnection;
+using StackExchange.Redis;
 
 namespace RedisDemo.FunctionalTests
 {
@@ -10,12 +10,14 @@ namespace RedisDemo.FunctionalTests
 	[TestClass]
 	public class StringTests
 	{
+		private static readonly ConnectionMultiplexer RedisConnection = ConnectionMultiplexer.Connect("localhost");
+
 		[TestMethod]
 		public async Task StringGetAsync_ForMissingKey_ReturnsNull()
 		{
 			// Arrange
 
-			var database = Redis.GetDatabase();
+			var database = RedisConnection.GetDatabase();
 
 			// Act
 
@@ -31,7 +33,7 @@ namespace RedisDemo.FunctionalTests
 		{
 			// Arrange
 
-			var database = Redis.GetDatabase();
+			var database = RedisConnection.GetDatabase();
 
 			var wasSet = await database.StringSetAsync("redis.demo:functional.tests:string.tests:existing.key", "Some Value");
 			Assert.IsTrue(wasSet);
